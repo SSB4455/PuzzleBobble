@@ -20,7 +20,7 @@ public class TestState implements IGameObject, OnGestureListener{
 	
 	public GestureDetector mGestureDetector;
 	
-	StateSystem stateSystem;
+	StateSystem stateSystem; 
 	Context context;
 	
 	int screenW, screenH;

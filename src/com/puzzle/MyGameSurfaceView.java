@@ -20,7 +20,7 @@ import android.view.SurfaceView;
 public class MyGameSurfaceView extends SurfaceView implements Callback, Runnable {
 	
 	public static int screenH, screenW;
-	public static Rect dst;
+	public static Rect dst; 
 	public static long ELAPSED_TIME = 20;
 	
 	Context context;
