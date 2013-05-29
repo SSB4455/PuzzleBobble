@@ -1,4 +1,0 @@
-BubbleGragon
-============
-
-android simple game
