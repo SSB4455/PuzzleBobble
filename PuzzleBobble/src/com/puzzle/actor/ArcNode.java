@@ -23,9 +23,6 @@ public class ArcNode {
 
 	@Override
 	public boolean equals(Object o) {
-		if(this == o)
-			return true;
-		
 		if(o instanceof ArcNode)
 			if(((ArcNode) o).bullet == bullet)
 				return true;

@@ -6,13 +6,12 @@ import java.util.List;
 import com.puzzle.MyGameSurfaceView;
 import com.puzzle.actor.Bullet;
 
-import android.R;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.Log;
 
-public class GameMap extends GameActor {
+public class Storehouse extends GameActor {
 	//屏幕边界
 	public static int GAME_AREA_TOP;
 	public static int GAME_AREA_LEFT;
@@ -20,25 +19,26 @@ public class GameMap extends GameActor {
 	public static int GAME_AREA_BOTTOM;
 	
 	int s, score;
+	boolean shooting;
 	
+	Bullet bullet;
 	public List<Position> positions;
 	GameActor bing;
 	
 	
 	
-	public GameMap(String name) {
+	public Storehouse(String name) {
 		super(name);
 		GAME_AREA_TOP = MyGameSurfaceView.screenH / 16 + Bullet.radius;
 		GAME_AREA_BOTTOM = MyGameSurfaceView.screenH * 19 / 24 - Bullet.radius;
 		GAME_AREA_LEFT = MyGameSurfaceView.screenW * 1 / 16 + Bullet.radius;
 		GAME_AREA_RIGHT = MyGameSurfaceView.screenW * 29 / 32 - Bullet.radius;
 		
-		s = 0;
-		positions = new ArrayList<Position>();
 		bing = new GameActor("bing");
-		for(int i = 0; GAME_AREA_TOP + Bullet.radius * 1.732 * i < GAME_AREA_BOTTOM + Bullet.radius * 2; i++){
+		positions = new ArrayList<Position>();
+		for(int i = 0; GAME_AREA_TOP + Bullet.radius * 1.732 * i < GAME_AREA_BOTTOM + Bullet.radius * 2; i++) {
 			for(int j = 0; ; j++) {
-				Position p = new Position((GAME_AREA_LEFT + Bullet.radius * 2 * j), (float) (GAME_AREA_TOP + Bullet.radius * Math.sqrt(3) * i));
+				Position p = new Position(GAME_AREA_LEFT + Bullet.radius * 2 * j, (float) (GAME_AREA_TOP + Bullet.radius * 1.732 * i));
 				p.x += (i % 2 == 0) ? 0 : Bullet.radius;
 				if(p.getX() < GAME_AREA_RIGHT)
 					positions.add(p);
@@ -47,8 +47,7 @@ public class GameMap extends GameActor {
 			}
 		}
 		
-		addChild(new Bullet(new Position(positions.get(0).x, positions.get(0).y), 0, "0"));
-		addChild(new Bullet(new Position(positions.get(1).x, positions.get(1).y), 0, "0"));
+		reSet();
 		
 		paint = new Paint();
 		paint.setTextSize(15);
@@ -57,6 +56,11 @@ public class GameMap extends GameActor {
 	}
 	
 	public void logic(long elapsedTime) {
+		if(shooting) {
+			bullet.logic(elapsedTime);
+			isCollsionWith(bullet);
+		}
+		
 		bing.logic(elapsedTime);
 	}
 	
@@ -67,35 +71,50 @@ public class GameMap extends GameActor {
 		//显示网格小点点
 		for(Position p : positions)
 			canvas.drawCircle(p.getX(), p.getY(), 1, paint);
+		if(shooting) {
+			bullet.myDraw(canvas);
+		}
 		
 		canvas.drawText("Score：" + score, 0, MyGameSurfaceView.screenH * 89 / 96, paint);
 	}
 	
-	public void addChild(Bullet bullet) {
+	boolean push(Bullet bullet) {
+		shooting = true;
+		this.bullet = bullet;
+		return true;
+	}
+	
+	public boolean isCollsionWith(Bullet bullet) {
+		if(bullet.position.y <= Storehouse.GAME_AREA_TOP) {
+			bullet.direction = Bullet.DIRECTION_STOP;
+			setAPosition(bullet);
+			addBulletToGameMap(bullet);
+			shooting = false;
+			return true;
+		}
 		
-		Position nearly = positions.get(0);
-		//找到在positions里面和当前bullet的psoition最近的position
-		for(Position position : positions) {
-			if(bullet.position.distance(position) < bullet.position.distance(nearly)) {
-				boolean flag = true;
-				for(GameActor actor : children) {
-					if(position.equals(((Bullet) actor).position)) {
-						flag = false;
-						Log.i("GameMap-addChild", "good, i find a can't set position and continue it.");
-					}
-				}
-				if(flag) {
-					nearly = position;
-				}
+		boolean isCollsionWith = false;
+		//取最近的泡泡
+		for(GameActor actor : this.children) {
+			if(bullet.position.distance(((Bullet) actor).position) < Bullet.radius * 2) {
+				bullet.direction = Bullet.DIRECTION_STOP;
+				setNearlyPosition(bullet, (Bullet) actor);
+				addBulletToGameMap(bullet);
+				Log.i("Bullet-" + name, "collsion with " + actor.name);
+				isCollsionWith = true;
+				shooting = false;
+				break;
 			}
 		}
 		
-		
-		bullet.setPosition(new Position(nearly.getX(), nearly.getY()));		//此处要新建一个以防止把地图上面的position带走
+		return isCollsionWith;
+	}
+	
+	public void addBulletToGameMap(Bullet bullet) {
 		bullet.name = s++ + "-" + bullet.name + "-" + bullet.type;
 		super.addChild(bullet);
 		
-		//为actor以及与它相邻的泡泡添加临接表
+		//为bullet以及与它相邻的泡泡添加临接表
 		for(GameActor actor : this.children) {
 			if(bullet.position.distance(((Bullet) actor).position) < Bullet.radius * 3) {
 				if(actor != bullet) {
@@ -108,17 +127,17 @@ public class GameMap extends GameActor {
 		Log.i("GameMap.addChile", bullet.showArcLink());
 		
 		bing.children.clear();
-		findSameColor(bullet);	//将与actor的同色的泡泡放到bing里面
+		findSameColorBulletToBing(bullet);	//将与actor的同色的泡泡放到bing里面
 		checkBing();		//从gameMap里面把bing内的泡泡删除 检查孤立的泡泡 使之落下
 	}
 	
-	void findSameColor(Bullet bullet) {
+	void findSameColorBulletToBing(Bullet bullet) {
 		bing.addChild(bullet);
 		
 		for(GameActor actor : this.children) {
-			if(bullet.position.distance(((Bullet) actor).position) < Bullet.radius *  3 && ((Bullet) bullet).getType() == ((Bullet) actor).getType()) {
+			if(bullet.position.distance(((Bullet) actor).position) < Bullet.radius * 3 && bullet.getType() == ((Bullet) actor).getType()) {
 				if(!bing.children.contains(actor))
-					findSameColor((Bullet) actor);
+					findSameColorBulletToBing((Bullet) actor);
 			}
 		}
 	}
@@ -173,15 +192,14 @@ public class GameMap extends GameActor {
 	}
 	
 	boolean hasARoot(Bullet bullet, List<Bullet> visted) {		//判断这个泡泡有没有根 不是标准递归
-		if(bullet.position.y == positions.get(0).y)
+		if(bullet.position.y == GAME_AREA_TOP)
 			return true;
 		
 		ArcNode arcNode = bullet.nextArc;
 		while(arcNode != null) {
 			if(!visted.contains(arcNode.bullet)) {
 				visted.add(arcNode.bullet);
-				if(hasARoot(arcNode.bullet, visted))
-					return true;
+				return hasARoot(arcNode.bullet, visted);
 			}
 			arcNode = arcNode.nextArc();
 		}
@@ -193,8 +211,45 @@ public class GameMap extends GameActor {
 		children.clear();
 		s = 0;
 		score = 0;
-		addChild(new Bullet(new Position(positions.get(0).x, positions.get(0).y), 0, "0"));
-		addChild(new Bullet(new Position(positions.get(1).x, positions.get(1).y), 0, "0"));
+		shooting = false;
+		addBulletToGameMap(new Bullet(new Position(positions.get(0).x, positions.get(0).y), 0, "0"));
+		addBulletToGameMap(new Bullet(new Position(positions.get(1).x, positions.get(1).y), 0, "0"));
+	}
+
+	void setAPosition(Bullet bullet) {
+		Position nearly = positions.get(positions.size() - 1);
+		//找到在positions里面和当前bullet的psoition最近的position
+		for(Position position : positions) {
+			if(bullet.position.distance(position) < bullet.position.distance(nearly) && findBulletByPosition(position) == null) {
+				nearly = position;
+			}
+		}
+		
+		bullet.setPosition(new Position(nearly.getX(), nearly.getY()));		//此处要新建一个以防止把地图上面的position带走
+	}
+	
+	void setNearlyPosition(Bullet bullet, Bullet toBullet) {
+		Position nearly = positions.get(positions.size() - 1);
+		//找到在positions里面和当前bullet的psoition最近的position
+		for(Position position : positions) {
+			if(toBullet.position.distance(position) < Bullet.radius * 3 
+					&& findBulletByPosition(position) == null 
+					&& bullet.position.distance(position) < bullet.position.distance(nearly) 
+					&& position.getY() >= toBullet.position.getY())
+				nearly = position;
+		}
+		
+		bullet.setPosition(new Position(nearly.getX(), nearly.getY()));		//此处要新建一个以防止把地图上面的position带走
+	}
+	
+	Bullet findBulletByPosition(Position position) {
+		for(GameActor actor : children) {
+			if(((Bullet) actor).position.distance(position) < Bullet.radius / 2) {
+				Log.i("GameMap-addChild", "good, i find a can't set position and continue it.");
+				return (Bullet) actor;
+			}
+		}
+		return null;
 	}
 	
 	public List<GameActor> getChildren() {

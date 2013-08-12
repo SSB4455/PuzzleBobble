@@ -36,12 +36,7 @@ public class StateSystem {
 		currentState.logic(elapsedTime);
 	}
 	
-	public void render() {
-		//Log.i("StateSystem", "start render");
-		currentState.render();
-	}
-	
-	public void myDraw(Canvas canvas){
+	public void myDraw(Canvas canvas) {
 		//Log.i("StateSystem", "start render with canvas");
 		currentState.myDraw(canvas);
 	}
@@ -62,8 +57,9 @@ public class StateSystem {
 		return true;
 	}
 	
-	public void testArgument(SurfaceHolder sfh,Canvas canvas){
+	public void testArgument(SurfaceHolder sfh,Canvas canvas) {
 		this.sfh = sfh;
 		this.canvas = canvas;
 	}
+	
 }

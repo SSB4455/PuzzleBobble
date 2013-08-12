@@ -3,7 +3,6 @@ package com.puzzle;
 import com.puzzle.stateSystem.MenuState;
 import com.puzzle.stateSystem.PlayState;
 import com.puzzle.stateSystem.StateSystem;
-import com.puzzle.stateSystem.TestState;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -65,7 +64,6 @@ public class MyGameSurfaceView extends SurfaceView implements Callback, Runnable
 		
 		stateSystem.addState("MenuState", new MenuState(context, stateSystem));
 		stateSystem.addState("PlayState", new PlayState(context, stateSystem));
-		stateSystem.addState("TestState", new TestState(context, stateSystem));
 		stateSystem.changeState("MenuState");
 		
 		//Æô¶¯Ïß³Ì

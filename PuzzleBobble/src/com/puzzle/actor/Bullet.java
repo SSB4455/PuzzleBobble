@@ -15,7 +15,7 @@ public class Bullet extends GameActor {
 	public static Bitmap [] frozen_bullet = new Bitmap[8];
 	public static Bitmap [] blind_bullet = new Bitmap[8];
 	public static int radius;
-	//发射弹珠的方向
+	//发射泡泡的方向
 	public static final int DIRECTION_LEFT = -1;
 	public static final int DIRECTION_UP = 0;
 	public static final int DIRECTION_RIGHT = 1;
@@ -54,48 +54,30 @@ public class Bullet extends GameActor {
 	
 	public void logic(long elapsedTime) {
 		
-		if(position.y > GameMap.GAME_AREA_TOP) {
+		if(position.y > Storehouse.GAME_AREA_TOP) {
 			position.y -= speed * Math.cos(shootAngle * Math.PI / 180) * elapsedTime / 100;
 			if(direction == DIRECTION_RIGHT)
-				position.x += speed * Math.sin(shootAngle * Math.PI/180) * elapsedTime / 100;
+				position.x += speed * Math.sin(shootAngle * Math.PI / 180) * elapsedTime / 100;
 			else if(direction == DIRECTION_LEFT)
-				position.x -= speed * Math.sin(shootAngle*Math.PI/180) * elapsedTime / 100;
+				position.x -= speed * Math.sin(shootAngle*Math.PI / 180) * elapsedTime / 100;
 		}else 
-			position.y = GameMap.GAME_AREA_TOP;
+			position.y = Storehouse.GAME_AREA_TOP;
 		
 		if(direction == DIRECTION_DOWN) {
 			position.y += 2 * speed * elapsedTime / 100;
 		}
 		
-		if(position.x > GameMap.GAME_AREA_RIGHT) {
+		if(position.x > Storehouse.GAME_AREA_RIGHT) {
 			direction = DIRECTION_LEFT;
-			position.x = GameMap.GAME_AREA_RIGHT;
-		}else if(position.x < GameMap.GAME_AREA_LEFT) {
+			position.x = Storehouse.GAME_AREA_RIGHT;
+		}else if(position.x < Storehouse.GAME_AREA_LEFT) {
 			direction = DIRECTION_RIGHT;
-			position.x = GameMap.GAME_AREA_LEFT;
+			position.x = Storehouse.GAME_AREA_LEFT;
 		}
 	}
 	
 	public void myDraw(Canvas canvas) {
 		canvas.drawBitmap(actorBitmap, position.x - radius, position.y - radius, paint);
-	}
-	
-	public boolean isCollsionWith(GameMap gameMap) {
-		if(position.y <= GameMap.GAME_AREA_TOP) {
-			position.y = GameMap.GAME_AREA_TOP;
-			direction = DIRECTION_STOP;
-			return true;
-		}
-		
-		for(GameActor actor : gameMap.children) {
-			if(position.distance(((Bullet) actor).position) < radius * 2.1) {
-				direction = DIRECTION_STOP;
-				Log.i("Bullet-" + name, "collsion with " + actor.name);
-				return true;
-			}
-		}
-		
-		return false;
 	}
 	
 	void startShoot(double angle) {

@@ -5,8 +5,7 @@ import java.util.List;
 import com.game.R;
 import com.puzzle.actor.Bullet;
 import com.puzzle.actor.GameActor;
-import com.puzzle.actor.GameActor.ActorStatus;
-import com.puzzle.actor.GameMap;
+import com.puzzle.actor.Storehouse;
 import com.puzzle.actor.Shooter;
 import com.puzzle.MyGameSurfaceView;
 
@@ -26,7 +25,7 @@ public class PlayState implements IGameObject {
 	
 	private StateSystem stateSystem;
 	
-	private GameMap gameMap;
+	private Storehouse storehouse;
 	private Shooter shooter;
 	
 	Rect src;
@@ -46,15 +45,15 @@ public class PlayState implements IGameObject {
 		isLose = BitmapFactory.decodeResource(context.getResources(), R.drawable.lose_panel);
 		
 		new Bullet(context);		//给Bullet的所有静态变量赋初值
-		gameMap = new GameMap("GameMap");
-		shooter = new Shooter(gameMap, context);
+		storehouse = new Storehouse("Storehouse");
+		shooter = new Shooter(storehouse, context);
 		
 		paint = new Paint();
 	}
 	
 	public void logic(long elapsedTime) {
 		shooter.logic(elapsedTime);
-		gameMap.logic(elapsedTime);
+		storehouse.logic(elapsedTime);
 		
 	}
 	
@@ -63,29 +62,25 @@ public class PlayState implements IGameObject {
 		canvas.drawBitmap(backGround, src, MyGameSurfaceView.dst, paint);		//画背景
 		
 		shooter.myDraw(canvas);
-		gameMap.myDraw(canvas);
+		storehouse.myDraw(canvas);
 			
-		if(isLose()) {
-			Log.i("PlayState", "is Lose");
+		if(isLose())
 			canvas.drawBitmap(isLose, (MyGameSurfaceView.screenW - isLose.getWidth()) / 2, MyGameSurfaceView.screenH / 2, paint);
-		}
 		
-		if(isWin()) {
-			Log.i("PlayState", "is Win");
+		if(isWin())
 			canvas.drawBitmap(isWin, (MyGameSurfaceView.screenW - isWin.getWidth()) / 2, MyGameSurfaceView.screenH / 2, paint);
-		}
 	}
 	
 	public boolean isWin() {
-		if(gameMap.getChildren().size() == 0)
+		if(storehouse.getChildren().size() == 0)
 			return true;
 		return false;
 	}
 	
 	public boolean isLose() {
-		List<GameActor> children = gameMap.getChildren();
+		List<GameActor> children = storehouse.getChildren();
 		for(GameActor actor : children)
-			if(((Bullet) actor).getPosition().getY() == gameMap.positions.get(gameMap.positions.size() - 1).getY())
+			if(((Bullet) actor).getPosition().getY() == storehouse.positions.get(storehouse.positions.size() - 1).getY())
 				return true;
 		
 		return false;
@@ -95,7 +90,7 @@ public class PlayState implements IGameObject {
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if(keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
 			Log.i("PlayState", "onKeyDown ——> back");
-			gameMap.reSet();
+			storehouse.reSet();
 			stateSystem.changeState("MenuState");
 		}
 		return true;
@@ -109,7 +104,7 @@ public class PlayState implements IGameObject {
 		}
 		else{
 			if(event.getAction() == MotionEvent.ACTION_UP) {
-				gameMap.reSet();
+				storehouse.reSet();
 			}
 		}
 		return true;
