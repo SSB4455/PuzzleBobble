@@ -108,15 +108,35 @@ public class Bullet extends GameActor {
 			return false;
 		else{
 			if(nextArc.equals(arcNode)) {
-				nextArc = nextArc.nextArc();
+				nextArc = nextArc.nextArc;
 				return true;
 			}
 			
 			ArcNode tempArcNode = nextArc;
 			while(tempArcNode.hasNext()) {
-				if(tempArcNode.nextArc().equals(arcNode)) 
-					tempArcNode.nextArc = tempArcNode.nextArc().nextArc();
-				tempArcNode = tempArcNode.nextArc();
+				if(tempArcNode.nextArc.equals(arcNode)) 
+					tempArcNode.nextArc = tempArcNode.nextArc.nextArc;
+				tempArcNode = tempArcNode.nextArc;
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	boolean deleteArcTo(Bullet toBullet) {
+		if(nextArc == null)
+			return false;
+		else{
+			if(nextArc.bullet == toBullet) {
+				nextArc = nextArc.nextArc;
+				return true;
+			}
+			
+			ArcNode tempArcNode = nextArc;
+			while(tempArcNode.hasNext()) {
+				if(tempArcNode.nextArc.bullet == toBullet) 
+					tempArcNode.nextArc = tempArcNode.nextArc.nextArc;
+				tempArcNode = tempArcNode.nextArc;
 				return true;
 			}
 		}

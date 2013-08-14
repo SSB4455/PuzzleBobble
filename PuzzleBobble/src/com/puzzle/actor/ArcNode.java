@@ -20,7 +20,7 @@ public class ArcNode {
 	ArcNode nextArc() {
 		return nextArc;
 	}
-
+	
 	@Override
 	public boolean equals(Object o) {
 		if(o instanceof ArcNode)

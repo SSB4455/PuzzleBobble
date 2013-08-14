@@ -87,7 +87,7 @@ public class Storehouse extends GameActor {
 	public boolean isCollsionWith(Bullet bullet) {
 		if(bullet.position.y <= Storehouse.GAME_AREA_TOP) {
 			bullet.direction = Bullet.DIRECTION_STOP;
-			setAPosition(bullet);
+			setNearlyPosition(bullet);
 			addBulletToGameMap(bullet);
 			shooting = false;
 			return true;
@@ -120,11 +120,11 @@ public class Storehouse extends GameActor {
 				if(actor != bullet) {
 					bullet.addArc(new ArcNode((Bullet) actor));
 					((Bullet) actor).addArc(new ArcNode(bullet));
-					Log.i("GameMap.addChile", ((Bullet) actor).showArcLink());
+					Log.i("Storehouse.addChile", ((Bullet) actor).showArcLink());
 				}
 			}
 		}
-		Log.i("GameMap.addChile", bullet.showArcLink());
+		Log.i("Storehouse.addChile", bullet.showArcLink());
 		
 		bing.children.clear();
 		findSameColorBulletToBing(bullet);	//将与actor的同色的泡泡放到bing里面
@@ -152,7 +152,7 @@ public class Storehouse extends GameActor {
 				while(arcNode != null) {
 					//把通向消去的那一串泡泡的弧都删除
 					arcNode.bullet.deleteArc(new ArcNode((Bullet) bingActor));
-					arcNode = arcNode.nextArc();
+					arcNode = arcNode.nextArc;
 				}
 				((Bullet) bingActor).direction = Bullet.DIRECTION_DOWN;
 				this.children.remove(bingActor);
@@ -160,29 +160,23 @@ public class Storehouse extends GameActor {
 		}else
 			bing.children.clear();		//如果没有凑够三个就直接清空bing不做下面
 		
-		
-		//之所以要再次循环 是因为现在才在gameMap中把所有连到已消去泡泡的弧删除； 不能够边删除边检查孤立点 那样会有问题		GameActor bing2 = new GameActor("bing2");
+		//之所以要再次循环 是因为现在才在gameMap中把所有连到已消去泡泡的弧删除； 不能够边删除边检查孤立点 那样会有问题
 		for(int i = 0; i < bing.children.size(); i++) {
 			GameActor bingActor = bing.children.get(i);
 			ArcNode arcNode = ((Bullet) bingActor).nextArc;
 			Log.i("Bing a actor", ((Bullet) bingActor).showArcLink());
 			while(arcNode != null) {
-				Log.i("GameMap.checkBing", arcNode.bullet.showArcLink());
-				if(!hasARoot(arcNode.bullet, new ArrayList<Bullet>())) {
-					Log.i("GameMap-chechBing", "[" + arcNode.bullet.name + "]" + " no root");
+				Log.i("Storehouse.checkBing", arcNode.bullet.showArcLink());
+				if(!hasRoot(arcNode.bullet, new ArrayList<Bullet>())) {
+					Log.i("Storehouse.chechBing", "[" + arcNode.bullet.name + "]" + " no root");
 					arcNode.bullet.direction = Bullet.DIRECTION_DOWN;
 					if(!bing.children.contains(arcNode.bullet))		//如果这个泡泡不在bing里面再加进来 不然会永远循环
 						bing.addChild(arcNode.bullet);
 					this.children.remove(arcNode.bullet);
 					//这个arcNode.bullet泡泡已经是孤立的泡泡了 要把它周围的泡泡的通向它的弧删掉
-					ArcNode arc = arcNode.bullet.nextArc;
-					while(arc != null) {
-						//把通向消去的那一串泡泡的弧都删除
-						arc.bullet.deleteArc(new ArcNode(arcNode.bullet));
-						arc = arc.nextArc();
-					}
+					
 				}
-				arcNode = arcNode.nextArc();
+				arcNode = arcNode.nextArc;
 			}
 		}
 		
@@ -191,7 +185,7 @@ public class Storehouse extends GameActor {
 		
 	}
 	
-	boolean hasARoot(Bullet bullet, List<Bullet> visted) {		//判断这个泡泡有没有根 不是标准递归
+	boolean hasRoot(Bullet bullet, List<Bullet> visted) {		//判断这个泡泡有没有根 不是标准递归
 		if(bullet.position.y == GAME_AREA_TOP)
 			return true;
 		
@@ -199,9 +193,9 @@ public class Storehouse extends GameActor {
 		while(arcNode != null) {
 			if(!visted.contains(arcNode.bullet)) {
 				visted.add(arcNode.bullet);
-				return hasARoot(arcNode.bullet, visted);
+				return hasRoot(arcNode.bullet, visted);
 			}
-			arcNode = arcNode.nextArc();
+			arcNode = arcNode.nextArc;
 		}
 		
 		return false;
@@ -216,11 +210,12 @@ public class Storehouse extends GameActor {
 		addBulletToGameMap(new Bullet(new Position(positions.get(1).x, positions.get(1).y), 0, "0"));
 	}
 
-	void setAPosition(Bullet bullet) {
+	void setNearlyPosition(Bullet bullet) {		//针对于置顶的情况
 		Position nearly = positions.get(positions.size() - 1);
 		//找到在positions里面和当前bullet的psoition最近的position
 		for(Position position : positions) {
-			if(bullet.position.distance(position) < bullet.position.distance(nearly) && findBulletByPosition(position) == null) {
+			if(findBulletByPosition(position) == null 
+					&& bullet.position.distance(position) < bullet.position.distance(nearly)) {
 				nearly = position;
 			}
 		}
@@ -228,7 +223,7 @@ public class Storehouse extends GameActor {
 		bullet.setPosition(new Position(nearly.getX(), nearly.getY()));		//此处要新建一个以防止把地图上面的position带走
 	}
 	
-	void setNearlyPosition(Bullet bullet, Bullet toBullet) {
+	void setNearlyPosition(Bullet bullet, Bullet toBullet) {		//针对于粘住别的泡泡的情况
 		Position nearly = positions.get(positions.size() - 1);
 		//找到在positions里面和当前bullet的psoition最近的position
 		for(Position position : positions) {
@@ -245,7 +240,7 @@ public class Storehouse extends GameActor {
 	Bullet findBulletByPosition(Position position) {
 		for(GameActor actor : children) {
 			if(((Bullet) actor).position.distance(position) < Bullet.radius / 2) {
-				Log.i("GameMap-addChild", "good, i find a can't set position and continue it.");
+				Log.i("Storehouse.addChild", "good, i find a can't set position and continue it.");
 				return (Bullet) actor;
 			}
 		}
