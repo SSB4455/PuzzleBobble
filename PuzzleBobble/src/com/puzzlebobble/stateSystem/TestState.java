@@ -1,6 +1,6 @@
-package com.puzzle.stateSystem;
+package com.puzzlebobble.stateSystem;
 
-import com.puzzle.MyGameSurfaceView;
+import com.puzzlebobble.PBSurfaceView;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -33,8 +33,8 @@ public class TestState implements IGameObject, OnGestureListener{
 		this.context = context;
 		this.stateSystem = stateSystem;
 		
-		screenW = MyGameSurfaceView.screenW;
-		screenH = MyGameSurfaceView.screenH;
+		screenW = PBSurfaceView.screenW;
+		screenH = PBSurfaceView.screenH;
 		
 		
 		paint = new Paint();

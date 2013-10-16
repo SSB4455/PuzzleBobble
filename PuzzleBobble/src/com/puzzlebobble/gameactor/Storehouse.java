@@ -1,10 +1,10 @@
-package com.puzzle.actor;
+package com.puzzlebobble.gameactor;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.puzzle.MyGameSurfaceView;
-import com.puzzle.actor.Bullet;
+import com.puzzlebobble.PBSurfaceView;
+import com.puzzlebobble.gameactor.Bullet;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -29,10 +29,10 @@ public class Storehouse extends GameActor {
 	
 	public Storehouse(String name) {
 		super(name);
-		GAME_AREA_TOP = MyGameSurfaceView.screenH / 16 + Bullet.radius;
-		GAME_AREA_BOTTOM = MyGameSurfaceView.screenH * 19 / 24 - Bullet.radius;
-		GAME_AREA_LEFT = MyGameSurfaceView.screenW * 1 / 16 + Bullet.radius;
-		GAME_AREA_RIGHT = MyGameSurfaceView.screenW * 29 / 32 - Bullet.radius;
+		GAME_AREA_TOP = PBSurfaceView.screenH / 16 + Bullet.radius;
+		GAME_AREA_BOTTOM = PBSurfaceView.screenH * 19 / 24 - Bullet.radius;
+		GAME_AREA_LEFT = PBSurfaceView.screenW * 1 / 16 + Bullet.radius;
+		GAME_AREA_RIGHT = PBSurfaceView.screenW * 29 / 32 - Bullet.radius;
 		
 		bing = new GameActor("bing");
 		positions = new ArrayList<Position>();
@@ -75,7 +75,7 @@ public class Storehouse extends GameActor {
 			bullet.myDraw(canvas);
 		}
 		
-		canvas.drawText("Score£º" + score, 0, MyGameSurfaceView.screenH * 89 / 96, paint);
+		canvas.drawText("Score£º" + score, 0, PBSurfaceView.screenH * 89 / 96, paint);
 	}
 	
 	boolean push(Bullet bullet) {

@@ -1,4 +1,4 @@
-package com.puzzle.stateSystem;
+package com.puzzlebobble.stateSystem;
 
 import java.util.Hashtable;
 

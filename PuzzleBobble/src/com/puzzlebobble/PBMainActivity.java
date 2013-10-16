@@ -1,9 +1,9 @@
-package com.puzzle;
+package com.puzzlebobble;
 
 import android.app.Activity;
 import android.os.Bundle;
 
-public class PuzzleBobbleActivity extends Activity {
+public class PBMainActivity extends Activity {
 	
 	
 	
@@ -12,7 +12,7 @@ public class PuzzleBobbleActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
-        setContentView(new MyGameSurfaceView(this));
+        setContentView(new PBSurfaceView(this));
         
         /* 完全没用
         DisplayMetrics dm = new DisplayMetrics();

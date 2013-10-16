@@ -1,4 +1,4 @@
-package com.puzzle.actor;
+package com.puzzlebobble.gameactor;
 
 import java.util.ArrayList;
 import java.util.List;

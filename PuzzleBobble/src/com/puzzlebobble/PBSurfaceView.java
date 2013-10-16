@@ -1,8 +1,8 @@
-package com.puzzle;
+package com.puzzlebobble;
 
-import com.puzzle.stateSystem.MenuState;
-import com.puzzle.stateSystem.PlayState;
-import com.puzzle.stateSystem.StateSystem;
+import com.puzzlebobble.stateSystem.MenuState;
+import com.puzzlebobble.stateSystem.PlayState;
+import com.puzzlebobble.stateSystem.StateSystem;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -16,10 +16,10 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceHolder.Callback;
 import android.view.SurfaceView;
 
-public class MyGameSurfaceView extends SurfaceView implements Callback, Runnable {
+public class PBSurfaceView extends SurfaceView implements Callback, Runnable {
 	
 	public static int screenH, screenW;
-	public static Rect dst; 
+	public static Rect dst;
 	public static long ELAPSED_TIME = 20;
 	
 	Context context;
@@ -37,7 +37,7 @@ public class MyGameSurfaceView extends SurfaceView implements Callback, Runnable
 	
 	
 	
-	public MyGameSurfaceView(Context context) {
+	public PBSurfaceView(Context context) {
 		super(context);
 		this.context = context;
 		
@@ -60,7 +60,7 @@ public class MyGameSurfaceView extends SurfaceView implements Callback, Runnable
 		screenW = this.getWidth();
 		screenH = this.getHeight();
 		
-		dst = new Rect(0, 0, MyGameSurfaceView.screenW, MyGameSurfaceView.screenH);
+		dst = new Rect(0, 0, PBSurfaceView.screenW, PBSurfaceView.screenH);
 		
 		stateSystem.addState("MenuState", new MenuState(context, stateSystem));
 		stateSystem.addState("PlayState", new PlayState(context, stateSystem));
@@ -97,7 +97,7 @@ public class MyGameSurfaceView extends SurfaceView implements Callback, Runnable
 			sfh.unlockCanvasAndPost(canvas);
 			
 			elapsedTime = (System.currentTimeMillis() - time[0]);
-			if(elapsedTime < ELAPSED_TIME){
+			if(elapsedTime < ELAPSED_TIME) {
 				try {
 					Thread.sleep(ELAPSED_TIME - elapsedTime);
 				} catch (InterruptedException e) {

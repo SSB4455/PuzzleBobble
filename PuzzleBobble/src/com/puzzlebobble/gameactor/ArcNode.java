@@ -1,4 +1,4 @@
-package com.puzzle.actor;
+package com.puzzlebobble.gameactor;
 
 public class ArcNode {
 	Bullet bullet;

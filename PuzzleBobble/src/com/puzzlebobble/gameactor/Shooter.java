@@ -1,10 +1,10 @@
-package com.puzzle.actor;
+package com.puzzlebobble.gameactor;
 
 import java.util.Random;
 
 import com.game.R;
-import com.puzzle.MyGameSurfaceView;
-import com.puzzle.actor.Bullet;
+import com.puzzlebobble.PBSurfaceView;
+import com.puzzlebobble.gameactor.Bullet;
 
 import android.content.Context;
 import android.graphics.BitmapFactory;
@@ -35,13 +35,13 @@ public class Shooter extends GameActor {
 		actorBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.shooter);
 		shooterW = actorBitmap.getWidth();
 		shooterH = actorBitmap.getHeight();
-		actorX = MyGameSurfaceView.screenW / 2;
-		actorY = MyGameSurfaceView.screenH - shooterH / 3 * 2;
+		actorX = PBSurfaceView.screenW / 2;
+		actorY = PBSurfaceView.screenH - shooterH / 3 * 2;
 		currentAngle = 0;
 		
 		random = new Random();
 		
-		int x = MyGameSurfaceView.screenW / 2;
+		int x = PBSurfaceView.screenW / 2;
 		int y = (int) actorY;
 		bulletA = new Bullet(new Position(x, y), random.nextInt(8), "A");
 		bulletB = new Bullet(new Position(x, y + shooterH / 2 - 10), random.nextInt(8), "B");

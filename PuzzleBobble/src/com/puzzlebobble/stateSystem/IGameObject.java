@@ -1,4 +1,4 @@
-package com.puzzle.stateSystem;
+package com.puzzlebobble.stateSystem;
 
 import android.graphics.Canvas;
 import android.view.KeyEvent;

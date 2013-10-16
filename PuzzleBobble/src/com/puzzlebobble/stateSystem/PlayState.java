@@ -1,13 +1,13 @@
-package com.puzzle.stateSystem;
+package com.puzzlebobble.stateSystem;
 
 import java.util.List;
 
 import com.game.R;
-import com.puzzle.actor.Bullet;
-import com.puzzle.actor.GameActor;
-import com.puzzle.actor.Storehouse;
-import com.puzzle.actor.Shooter;
-import com.puzzle.MyGameSurfaceView;
+import com.puzzlebobble.PBSurfaceView;
+import com.puzzlebobble.gameactor.Bullet;
+import com.puzzlebobble.gameactor.GameActor;
+import com.puzzlebobble.gameactor.Shooter;
+import com.puzzlebobble.gameactor.Storehouse;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -59,16 +59,16 @@ public class PlayState implements IGameObject {
 	
 	public void myDraw(Canvas canvas) {
 		canvas.drawColor(Color.BLACK);		//ÍòÒ»Â¶±ß ºÚÉ«²¹³ä
-		canvas.drawBitmap(backGround, src, MyGameSurfaceView.dst, paint);		//»­±³¾°
+		canvas.drawBitmap(backGround, src, PBSurfaceView.dst, paint);		//»­±³¾°
 		
 		shooter.myDraw(canvas);
 		storehouse.myDraw(canvas);
 			
 		if(isLose())
-			canvas.drawBitmap(isLose, (MyGameSurfaceView.screenW - isLose.getWidth()) / 2, MyGameSurfaceView.screenH / 2, paint);
+			canvas.drawBitmap(isLose, (PBSurfaceView.screenW - isLose.getWidth()) / 2, PBSurfaceView.screenH / 2, paint);
 		
 		if(isWin())
-			canvas.drawBitmap(isWin, (MyGameSurfaceView.screenW - isWin.getWidth()) / 2, MyGameSurfaceView.screenH / 2, paint);
+			canvas.drawBitmap(isWin, (PBSurfaceView.screenW - isWin.getWidth()) / 2, PBSurfaceView.screenH / 2, paint);
 	}
 	
 	public boolean isWin() {

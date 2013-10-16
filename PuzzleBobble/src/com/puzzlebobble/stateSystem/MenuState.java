@@ -1,7 +1,7 @@
-package com.puzzle.stateSystem;
+package com.puzzlebobble.stateSystem;
 
 import com.game.R;
-import com.puzzle.MyGameSurfaceView;
+import com.puzzlebobble.PBSurfaceView;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -37,8 +37,8 @@ public class MenuState implements IGameObject {
 		this.context = context;
 		this.stateSystem = stateSystem;
 		
-		screenW = MyGameSurfaceView.screenW;
-		screenH = MyGameSurfaceView.screenH;
+		screenW = PBSurfaceView.screenW;
+		screenH = PBSurfaceView.screenH;
 		
 		paint = new Paint();
 		paint.setColor(Color.WHITE);
@@ -80,7 +80,7 @@ public class MenuState implements IGameObject {
 	
 	public void myDraw(Canvas canvas) {
 		canvas.drawColor(Color.BLACK);		//补充黑色露边
-		canvas.drawBitmap(menuBackground, src, MyGameSurfaceView.dst, paint);		//画菜单背景
+		canvas.drawBitmap(menuBackground, src, PBSurfaceView.dst, paint);		//画菜单背景
 		
 		canvas.drawText(bubbleBobble, menuLocation[0][X], menuLocation[0][Y], paint);
 		
@@ -90,16 +90,17 @@ public class MenuState implements IGameObject {
 	}
 	
 	public boolean onTouchEvent(MotionEvent event) {
-		
-		if(event.getAction() == MotionEvent.ACTION_UP){		//防止到另一个State中产生Fling的崩溃
+		if(event.getAction() == MotionEvent.ACTION_UP) {		//防止到另一个State中产生Fling的崩溃
 			for(int i = 1; i < 5; i++) {
-				if(menuLocation[i][X] < event.getX() &&
-						menuLocation[i][Y] < event.getY() && event.getY() < menuLocation[i][Y] + 42){
-					if(i == 1){
+				if(menuLocation[i][X] < event.getX() 
+						&& event.getX() <  menuLocation[i][X] + menuButton[i].getWidth() 
+						&& menuLocation[i][Y] < event.getY() 
+						&& event.getY() < menuLocation[i][Y] + menuButton[i].getHeight()) {
+					if(i == 1) {
 						stateSystem.changeState("PlayState");
 						Toast.makeText(context, "Touch the screen ^_^!", Toast.LENGTH_SHORT).show();
 					}
-					if(i == 2){
+					if(i == 2) {
 						Toast.makeText(context, "Just look this ^_^!", Toast.LENGTH_SHORT).show();
 					}
 					/*
@@ -116,8 +117,8 @@ public class MenuState implements IGameObject {
 	}
 	
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		if(keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN){  
-			if((System.currentTimeMillis() - exitTime) > 2000){
+		if(keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN) {
+			if((System.currentTimeMillis() - exitTime) > 2000) {
 		    	Toast.makeText(context, "再按一次退出程序", Toast.LENGTH_SHORT).show();
 		        exitTime = System.currentTimeMillis();
 		    }
